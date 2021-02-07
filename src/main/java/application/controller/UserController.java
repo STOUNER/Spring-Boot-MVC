@@ -39,7 +39,6 @@ public class UserController {
     @GetMapping("user-list-json")
     public List<User> getListOfUsers() {
         List<User> userList = userService.findAll();
-//        model.addAttribute("user", userList);
         return userList;
     }
 
@@ -58,14 +57,11 @@ public class UserController {
 
     @RequestMapping(value = "user-post-json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void deleteUserJson(@RequestBody User user) {
-//        System.out.println(string);
         userService.deleteUserById(user.getId());
-//        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "user-save-json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void saveUserJson(@RequestBody User user) throws JsonProcessingException {
-        System.out.println(user);
         userService.save(user);
     }
 
@@ -95,8 +91,4 @@ public class UserController {
         return "redirect:/admin";
     }
 
-    @GetMapping("user-json")
-    public User getUser() {
-        return new User("Anton", "User", "User@gmail.com", 666, Collections.singleton(new Role(3L, "ROLE_USER")), "1224");
-    }
 }

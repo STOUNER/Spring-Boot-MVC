@@ -9,17 +9,64 @@ const USER_ROLE = [
 const ADMIN_ROLE = [
     {roleId: 2, roleName: "ROLE_ADMIN", authority: "ROLE_ADMIN"},
 ];
+
 table.addEventListener("click", (event) => {
-    const {name} = event.target;
+    const {name, id} = event.target;
+    if (id === 'delete') {
+        userDelete(name);
+    } else if (id === 'edit') {
+        userEdit(name);
+    }
+
+
+});
+
+
+function saveChanges(event) {
+    event.preventDefault();
+    const {name, lastName, email, age, password, roles} = event.target.elements;
+    //Мммм, сяки маки
+    const dataUserForm = {
+        name: name.value,
+        lastName: lastName.value,
+        email: email.value,
+        age: age.value,
+        password: password.value,
+        roles: roles.value === "1" ? USER_ROLE : ADMIN_ROLE,
+    };
+    console.log(event);
+    console.log(dataUserForm);
+}
+
+function userEdit(UID) {
+    console.log(UID)
     const users = JSON.parse(localStorage.getItem("users"));
-    const user = users.find((user) => user.id == name);
+    const user = users.find((user) => user.id == UID);
+    const modalInputs = document.querySelectorAll('.modalInput');
+    const getForm = document.getElementById('EditUserForm')
+    getForm.onsubmit = saveChanges;
+    for (let input of modalInputs) {
+        if (input.name === 'roles') {
+            input.value = user.roles[0].roleId;
+        } else {
+            input.value = user[input.name]
+        }
+    }
+}
+
+
+function userDelete(UID) {
+    const users = JSON.parse(localStorage.getItem("users"));
+    const user = users.find((user) => user.id == UID);
 
     fetch(URL_DELETE, {
         method: "POST",
         headers: {"content-type": "application/json"},
         body: JSON.stringify(user),
     });
-});
+}
+
+
 //Получение списка пользователей
 function mapUsers(users) {
     return users.forEach((user) => {
@@ -29,9 +76,15 @@ function mapUsers(users) {
                     <td class="table-primary">${user.lastName}</td>
                     <td class="table-primary">${user.age}</td>
                     <td class="table-primary">
-                        <button type="button" class="btn btn-primary" name="${user.id}">Delete</button>
+                        <button type="button" class="btn btn-primary" name="${user.id}" id="delete" >Delete</button>
                     </td>
+                    <td class="table-primary">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditUser" id="edit" name="${user.id}" >Launch demo modal</button>
+                        <!-- Modal -->
+                    </td>
+
                 </tr>`;
+
         table.innerHTML += row;
     });
 }
@@ -42,6 +95,8 @@ fetch(URL, {method: "GET", headers: {"Content-Type": "application/json"}})
         localStorage.setItem("users", JSON.stringify(users));
         mapUsers(users);
     });
+
+
 const form = document.getElementById("myNewUser");
 form.addEventListener("submit", (event) => {
     event.preventDefault();
