@@ -30,10 +30,8 @@ public class UserDaoImp implements UserDao {
     @Override
     public User getUserByName(String login) {
         Session session = sessionFactory.openSession();
-//        User user = (User) session.createQuery("FROM User u where u.firstName = :login").setParameter("login", login).getSingleResult();
-
-        session.close();
-        return new  User("Anton","GAY","User@gmail.com", 666, Collections.singleton(new Role(3L, "ROLE_USER")),  "1224");
+        User user = (User) session.createQuery("FROM User u where u.name = :login").setParameter("login", login).getSingleResult();
+        return user;
     }
 
     @Override

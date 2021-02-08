@@ -1,15 +1,17 @@
 package application.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Set;
 
 //Role
 @Entity
 @Table(name = "role")
 public class Role implements GrantedAuthority {
-    public Role() {
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +22,13 @@ public class Role implements GrantedAuthority {
 
     @Column(name = "role_name")
     private String roleName;
+
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "user_id",referencedColumnName="id")
+//    private User user;
+
+    public Role() {
+    }
 
     public Role(Long roleId, String roleName) {
         this.roleId = roleId;
@@ -46,4 +55,13 @@ public class Role implements GrantedAuthority {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
+
+//    @JsonBackReference
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 }

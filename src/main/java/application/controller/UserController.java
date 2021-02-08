@@ -28,15 +28,14 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("user-list-json")
     public List<User> getListOfUsers() {
         List<User> userList = userService.findAll();
-        System.out.println(userList);
         return userList;
     }
-
-    @RequestMapping(value = "user-post-json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "user-post-json", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> deleteUserJson(@RequestBody User user) {
         if (user != null) {
             userService.deleteUserById(user.getId());
@@ -45,9 +44,9 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-    @RequestMapping(value = "user-save-json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<User> saveUserJson(@RequestBody User user) throws JsonProcessingException {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "user-save-json", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> saveUserJson(@RequestBody User user) {
         if (user != null) {
             userService.save(user);
             return new ResponseEntity<>(HttpStatus.OK);

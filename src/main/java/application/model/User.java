@@ -1,17 +1,20 @@
 package application.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class User implements UserDetails {
 
     @Id
@@ -29,7 +32,6 @@ public class User implements UserDetails {
 
     @Column
     private Integer age;
-
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
@@ -100,6 +102,7 @@ public class User implements UserDetails {
         this.age = age;
     }
 
+    @JsonManagedReference
     public Set<Role> getRoles() {
         return roles;
     }
@@ -117,10 +120,10 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-
+    @JsonDeserialize(as = SimpleGrantedAuthority.class)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return roles;
     }
 
     @Override
@@ -148,4 +151,29 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(LastName, user.LastName) && Objects.equals(email, user.email) && Objects.equals(age, user.age) && Objects.equals(roles, user.roles) && Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, LastName, email, age, roles, password);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", roles=" + roles +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

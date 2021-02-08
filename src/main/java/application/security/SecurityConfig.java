@@ -1,4 +1,5 @@
 package application.security;
+
 import application.security.handler.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.cors().disable()
+                .csrf().disable();
         http.authorizeRequests()
                 .antMatchers("/").authenticated()
                 .and().formLogin().loginPage("/login").permitAll()
