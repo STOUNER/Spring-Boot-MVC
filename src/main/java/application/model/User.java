@@ -1,5 +1,6 @@
 package application.model;
 
+import application.dto.RoleDTO;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,6 +45,15 @@ public class User implements UserDetails {
     }
 
     public User(String name, String lastName, String email, Integer age, Set<Role> roles, String password) {
+        this.name = name;
+        this.LastName = lastName;
+        this.email = email;
+        this.age = age;
+        this.roles = roles;
+        this.password = password;
+    }
+    public User(Long id,String name, String lastName, String email, Integer age, Set<Role> roles, String password) {
+        this.id = id;
         this.name = name;
         this.LastName = lastName;
         this.email = email;

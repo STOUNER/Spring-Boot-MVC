@@ -2,6 +2,7 @@
 const URL = "http://localhost:8080/user-list-json";
 const URL_DELETE = "http://localhost:8080/user-post-json";
 const URL_SAVE = "http://localhost:8080/user-save-json";
+const URL_CURRENT_USER = "http://localhost:8080/session-user-json"
 const table = document.getElementById("myTable");
 const USER_ROLE = [
     {roleId: 1, roleName: "ROLE_USER", authority: "ROLE_USER"},
@@ -66,7 +67,6 @@ async function getSaveUser(user) {
             .then((response) => response.json())
             .then((users) => {
                 localStorage.setItem("users", JSON.stringify(users));
-                console.log(users);
                 mapUsers(users);
             });
     }
@@ -152,3 +152,11 @@ form.addEventListener("submit", (event) => {
     };
     getSaveUser(dataUserForm)
 });
+
+
+//Получение текущего пользователя
+fetch(URL_CURRENT_USER, {method: "GET", headers: {"Content-Type": "application/json"}})
+    .then((response) => response.json())
+    .then((currentUser) => {
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    });

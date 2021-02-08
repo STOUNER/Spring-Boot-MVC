@@ -23,9 +23,9 @@ public class Role implements GrantedAuthority {
     @Column(name = "role_name")
     private String roleName;
 
-//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "user_id",referencedColumnName="id")
-//    private User user;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id",referencedColumnName="id")
+    private User user;
 
     public Role() {
     }

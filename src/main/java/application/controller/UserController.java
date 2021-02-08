@@ -1,5 +1,7 @@
 package application.controller;
 
+import application.dto.RoleDTO;
+import application.dto.UserDTO;
 import application.model.Role;
 import application.model.User;
 import application.service.UserService;
@@ -34,9 +36,10 @@ public class UserController {
         List<User> userList = userService.findAll();
         return userList;
     }
+//Delete user
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "user-post-json", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> deleteUserJson(@RequestBody User user) {
+    public ResponseEntity<UserDTO> deleteUserJson(@RequestBody UserDTO user) {
         if (user != null) {
             userService.deleteUserById(user.getId());
             return new ResponseEntity<>(HttpStatus.OK);
@@ -44,23 +47,29 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+//Save/Edit user
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "user-save-json", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> saveUserJson(@RequestBody User user) {
+    public ResponseEntity<UserDTO> saveUserJson(@RequestBody UserDTO user) {
         if (user != null) {
-            userService.save(user);
-            return new ResponseEntity<>(HttpStatus.OK);
+            RoleDTO roleDTO = user.getRoles().stream().findFirst().get();
+            if (user.getId() != null) {
+                userService.save(new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), Collections.singleton(new Role(roleDTO.getRoleId(), roleDTO.getRoleName())), user.getPassword()));
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                userService.save(new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), Collections.singleton(new Role(roleDTO.getRoleId(), roleDTO.getRoleName())), user.getPassword()));
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-//    @GetMapping("user")
-//    public String getCurrentUser(Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = (User) authentication.getPrincipal();
-//        model.addAttribute("user", user);
-//        return "user_info";
-//    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "session-user-json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        return user;
+    }
 
 }
