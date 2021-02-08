@@ -1,4 +1,4 @@
-//Константы
+//Константы - начало заполнения
 const URL = "http://localhost:8080/user-list-json";
 const URL_DELETE = "http://localhost:8080/user-post-json";
 const URL_SAVE = "http://localhost:8080/user-save-json";
@@ -9,7 +9,19 @@ const USER_ROLE = [
 const ADMIN_ROLE = [
     {roleId: 2, roleName: "ROLE_ADMIN", authority: "ROLE_ADMIN"},
 ];
+const form = document.getElementById("myNewUser");
+//Константы - конец заполнения.
 
+//Инициализация загрузки пользователей.
+fetch(URL, {method: "GET", headers: {"Content-Type": "application/json"}})
+    .then((response) => response.json())
+    .then((users) => {
+        localStorage.setItem("users", JSON.stringify(users));
+        mapUsers(users);
+    });
+
+
+//Универсальный слушатель действия delete/edit
 table.addEventListener("click", (event) => {
     const {name, id} = event.target;
     if (id === 'delete') {
@@ -17,33 +29,58 @@ table.addEventListener("click", (event) => {
     } else if (id === 'edit') {
         userEdit(name);
     }
-
-
 });
 
-
+//Сохранение изменения пользовательских данных.
 function saveChanges(event) {
     event.preventDefault();
-    const {name, lastName, email, age, password, roles} = event.target.elements;
-    //Мммм, сяки маки
+    const {id, name, lastName, email, age, password, roles} = event.target.elements;
+    event.target.elements;
     const dataUserForm = {
+        id: id.value,
         name: name.value,
         lastName: lastName.value,
         email: email.value,
         age: age.value,
         password: password.value,
         roles: roles.value === "1" ? USER_ROLE : ADMIN_ROLE,
-    };
-    console.log(event);
-    console.log(dataUserForm);
+    }
+    getSaveUser(dataUserForm);
 }
 
+async function getSaveUser(user) {
+    const response = await fetch(URL_SAVE, {
+        method: "POST",
+        headers: {"content-type": "application/json"},
+        body: JSON.stringify(user),
+    });
+    if (response.ok) {
+        const elmtTable = document.getElementById('myTable');
+        const tableRows = elmtTable.getElementsByTagName('tr');
+        console.log(tableRows);
+        const rowCount = tableRows.length;
+        for (let x = rowCount - 1; x >= 0; x--) {
+            elmtTable.removeChild(tableRows[x]);
+        }
+        fetch(URL, {method: "GET", headers: {"Content-Type": "application/json"}})
+            .then((response) => response.json())
+            .then((users) => {
+                localStorage.setItem("users", JSON.stringify(users));
+                console.log(users);
+                mapUsers(users);
+            });
+    }
+
+
+}
+
+
+//Переход в режим изменения пользовательских данных
 function userEdit(UID) {
-    console.log(UID)
     const users = JSON.parse(localStorage.getItem("users"));
     const user = users.find((user) => user.id == UID);
     const modalInputs = document.querySelectorAll('.modalInput');
-    const getForm = document.getElementById('EditUserForm')
+    const getForm = document.getElementById('EditUserForm');
     getForm.onsubmit = saveChanges;
     for (let input of modalInputs) {
         if (input.name === 'roles') {
@@ -54,16 +91,27 @@ function userEdit(UID) {
     }
 }
 
-
-function userDelete(UID) {
+//Удаление пользователя.
+async function userDelete(UID) {
     const users = JSON.parse(localStorage.getItem("users"));
     const user = users.find((user) => user.id == UID);
 
-    fetch(URL_DELETE, {
+    const response = await fetch(URL_DELETE, {
         method: "POST",
         headers: {"content-type": "application/json"},
         body: JSON.stringify(user),
     });
+    if (response.ok) {
+        const newUsers = users.filter((user) => user.id != UID)
+        localStorage.setItem("users", JSON.stringify(newUsers))
+        const elmtTable = document.getElementById('myTable');
+        const tableRows = elmtTable.getElementsByTagName('tr');
+        const rowCount = tableRows.length;
+        for (let x = rowCount - 1; x >= 0; x--) {
+            elmtTable.removeChild(tableRows[x]);
+        }
+        mapUsers(newUsers);
+    }
 }
 
 
@@ -79,7 +127,7 @@ function mapUsers(users) {
                         <button type="button" class="btn btn-primary" name="${user.id}" id="delete" >Delete</button>
                     </td>
                     <td class="table-primary">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditUser" id="edit" name="${user.id}" >Launch demo modal</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditUser" id="edit" name="${user.id}" >Edit</button>
                         <!-- Modal -->
                     </td>
 
@@ -89,19 +137,11 @@ function mapUsers(users) {
     });
 }
 
-fetch(URL, {method: "GET", headers: {"Content-Type": "application/json"}})
-    .then((response) => response.json())
-    .then((users) => {
-        localStorage.setItem("users", JSON.stringify(users));
-        mapUsers(users);
-    });
 
-
-const form = document.getElementById("myNewUser");
+//Создание нового пользователя.
 form.addEventListener("submit", (event) => {
     event.preventDefault();
     const {name, lastName, email, age, password, roles} = event.target.elements;
-    //Мммм, сяки маки
     const dataUserForm = {
         name: name.value,
         lastName: lastName.value,
@@ -110,24 +150,5 @@ form.addEventListener("submit", (event) => {
         password: password.value,
         roles: roles.value === "1" ? USER_ROLE : ADMIN_ROLE,
     };
-    fetch(URL_SAVE, {
-        method: "POST",
-        headers: {"content-type": "application/json"},
-        body: JSON.stringify(dataUserForm),
-    });
-    const elmtTable = document.getElementById('myTable');
-    const tableRows = elmtTable.getElementsByTagName('tr');
-    const rowCount = tableRows.length;
-
-    for (const x = rowCount - 1; x > 0; x--) {
-        elmtTable.removeChild(tableRows[x]);
-    }
-    localStorage.clear();
-    fetch(URL, {method: "GET", headers: {"Content-Type": "application/json"}})
-        .then((response) => response.json())
-        .then((users) => {
-            localStorage.setItem("users", JSON.stringify(users));
-            mapUsers(users);
-        });
-
+    getSaveUser(dataUserForm)
 });
