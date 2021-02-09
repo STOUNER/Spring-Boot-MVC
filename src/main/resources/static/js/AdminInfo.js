@@ -1,8 +1,6 @@
 const userTable = document.getElementById("myUserTable");
-const URL_CURRENT_USER = "http://localhost:8080/session-user-json"
 const nav = document.getElementById("currentUser")
-
-
+const URL_CURRENT_USER = "http://localhost:8080/current-session-user"
 
 function getDataInUserTable(currentUser) {
     const row = `<tr>  
@@ -19,8 +17,6 @@ function getDataInUserTable(currentUser) {
 
 
 function getCurrentUser(currentUser) {
-    console.log(nav)
-    console.log(nav.innerText)
     return nav.innerText = currentUser.name + ":" + " " + currentUser.email;
 }
 

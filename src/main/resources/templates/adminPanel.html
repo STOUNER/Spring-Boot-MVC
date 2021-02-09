@@ -34,8 +34,9 @@
         <!-- Sidebar -->
         <div class="bg-light border-right" id="sidebar-wrapper">
             <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action bg-light">Admin</a>
-                <a href="http://localhost:8080/user-test2" class="list-group-item list-group-item-action bg-light">User</a>
+                <a href="http://localhost:8080/admin-panel" class="list-group-item list-group-item-action bg-light">Admin</a>
+                <a href="http://localhost:8080/admin-info"
+                   class="list-group-item list-group-item-action bg-light">User</a>
             </div>
         </div>
         <div id="page-content-wrapper">
@@ -129,7 +130,8 @@
                                                                 data-bs-dismiss="modal">
                                                             Close
                                                         </button>
-                                                        <button type="submit" class="btn btn-primary">Send message
+                                                        <button type="submit" class="btn btn-primary" id="buttonEdit">
+                                                            Edit
                                                         </button>
                                                     </div>
                                                 </form>
@@ -182,7 +184,9 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">
+                                    Submit
+                                </button>
                             </form>
                         </div>
 

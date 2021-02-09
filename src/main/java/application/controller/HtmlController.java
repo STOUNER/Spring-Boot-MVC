@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class HtmlController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("user-test")
+    @GetMapping("admin-panel")
     public String getAdminPanel() {
         return "adminPanel";
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("user-test2")
+    @GetMapping("admin-info")
     public String getAdminInfo() {
         return "adminInfo";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("user-test3")
+    @GetMapping("user-info")
     public String getUserInfo() {
         return "userInfo";
     }

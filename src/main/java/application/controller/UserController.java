@@ -5,19 +5,13 @@ import application.dto.UserDTO;
 import application.model.Role;
 import application.model.User;
 import application.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -34,16 +28,17 @@ public class UserController {
         this.userService = userService;
     }
 
+    //Получение текущего пользователя.
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("user-list-json")
+    @GetMapping("get-all-users")
     public List<User> getListOfUsers() {
         List<User> userList = userService.findAll();
         return userList;
     }
 
-    //Delete user
+    //Удаление пользователя.
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "user-post-json", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "delete-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> deleteUserJson(@RequestBody UserDTO user) {
         if (user != null) {
             userService.deleteUserById(user.getId());
@@ -53,9 +48,9 @@ public class UserController {
         }
     }
 
-    //Save/Edit user
+    //Сохранение и удаление пользователя.
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "user-save-json", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "save-update-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> saveUserJson(@RequestBody UserDTO user) {
         if (user != null) {
             RoleDTO roleDTO = user.getRoles().stream().findFirst().get();
@@ -71,15 +66,16 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "session-user-json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    //Получение текущего пользователя в сессии.
+    @RequestMapping(value = "current-session-user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         return user;
     }
 
-    //Logout USER.
-    @RequestMapping(value = "/logout-custom", method = RequestMethod.POST)
+    //Logout пользователя.
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public RedirectView logoutPage(HttpServletRequest request,
                                    HttpServletResponse response) {
         Authentication auth =

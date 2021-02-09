@@ -1,10 +1,11 @@
 //Константы - начало заполнения
-const URL = "http://localhost:8080/user-list-json";
-const URL_DELETE = "http://localhost:8080/user-post-json";
-const URL_SAVE = "http://localhost:8080/user-save-json";
-const URL_CURRENT_USER = "http://localhost:8080/session-user-json"
+const URL = "http://localhost:8080/get-all-users";
+const URL_DELETE = "http://localhost:8080/delete-user";
+const URL_SAVE = "http://localhost:8080/save-update-user";
+const URL_CURRENT_USER = "http://localhost:8080/current-session-user"
 const table = document.getElementById("myTable");
 const nav = document.getElementById("currentUser")
+const userTab = document.getElementById("home-tab")
 const USER_ROLE = [
     {roleId: 1, roleName: "ROLE_USER", authority: "ROLE_USER"},
 ];
@@ -59,7 +60,6 @@ async function getSaveUser(user) {
     if (response.ok) {
         const elmtTable = document.getElementById('myTable');
         const tableRows = elmtTable.getElementsByTagName('tr');
-        console.log(tableRows);
         const rowCount = tableRows.length;
         for (let x = rowCount - 1; x >= 0; x--) {
             elmtTable.removeChild(tableRows[x]);
@@ -154,8 +154,8 @@ form.addEventListener("submit", (event) => {
         roles: roles.value === "1" ? USER_ROLE : ADMIN_ROLE,
     };
     getSaveUser(dataUserForm)
+    TriggerTabs();
 });
-
 
 //Получение текущего пользователя
 fetch(URL_CURRENT_USER, {method: "GET", headers: {"Content-Type": "application/json"}})
@@ -168,9 +168,14 @@ fetch(URL_CURRENT_USER, {method: "GET", headers: {"Content-Type": "application/j
 
 //Передача данных в NAV-информация о пользователи.
 function getCurrentUser(currentUser) {
-    console.log(nav)
-    console.log(nav.innerText)
     return nav.innerText = currentUser.name + ":" + " " + currentUser.email;
 }
 
+function TriggerTabs() {
+    const firstTab = new bootstrap.Tab(userTab)
+    firstTab.show()
+}
 
+$('#buttonEdit').click(function () {
+    $('#EditUser').modal('hide');
+});
