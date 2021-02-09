@@ -4,6 +4,7 @@ const URL_DELETE = "http://localhost:8080/user-post-json";
 const URL_SAVE = "http://localhost:8080/user-save-json";
 const URL_CURRENT_USER = "http://localhost:8080/session-user-json"
 const table = document.getElementById("myTable");
+const nav = document.getElementById("currentUser")
 const USER_ROLE = [
     {roleId: 1, roleName: "ROLE_USER", authority: "ROLE_USER"},
 ];
@@ -123,6 +124,8 @@ function mapUsers(users) {
                     <td class="table-primary">${user.name}</td>
                     <td class="table-primary">${user.lastName}</td>
                     <td class="table-primary">${user.age}</td>
+                    <td class="table-primary">${user.email}</td>
+                    <td class="table-primary">${user.roles[0].roleName}</td>
                     <td class="table-primary">
                         <button type="button" class="btn btn-primary" name="${user.id}" id="delete" >Delete</button>
                     </td>
@@ -158,5 +161,16 @@ form.addEventListener("submit", (event) => {
 fetch(URL_CURRENT_USER, {method: "GET", headers: {"Content-Type": "application/json"}})
     .then((response) => response.json())
     .then((currentUser) => {
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        localStorage.setItem("currentUser", JSON.stringify(currentUser))
+        getCurrentUser(currentUser);
+
     });
+
+//Передача данных в NAV-информация о пользователи.
+function getCurrentUser(currentUser) {
+    console.log(nav)
+    console.log(nav.innerText)
+    return nav.innerText = currentUser.name + ":" + " " + currentUser.email;
+}
+
+

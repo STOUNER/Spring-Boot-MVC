@@ -11,8 +11,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HtmlController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("user-test")
-    public String getIndex() {
-        return "index";
+    public String getAdminPanel() {
+        return "adminPanel";
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("user-test2")
+    public String getAdminInfo() {
+        return "adminInfo";
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("user-test3")
+    public String getUserInfo() {
+        return "userInfo";
     }
 
     @GetMapping("login")

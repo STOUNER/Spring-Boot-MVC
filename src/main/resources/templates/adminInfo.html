@@ -9,7 +9,7 @@
     <meta name="author" content="">
 
     <title>Simple Sidebar - Start Bootstrap Template</title>
-    <script type="text/javascript" src="/js/GetUsers.js" defer></script>
+    <script type="text/javascript" src="/js/AdminInfo.js" defer></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -23,12 +23,10 @@
 <body class="h-100 w-100">
 <div>
     <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
-            Bootstrap
-        </a>
-        <a class="btn btn-secondary" href="#" role="button">
-            Logout
-        </a>
+        <div class="container-fluid">
+            <span class="navbar-text" id="currentUser"></span>
+            <a class="btn btn-primary" href="http://localhost:8080/logout-custom" role="button">Logout</a>
+        </div>
 
     </nav>
     <div class="d-flex" id="wrapper">
@@ -36,8 +34,10 @@
         <!-- Sidebar -->
         <div class="bg-light border-right" id="sidebar-wrapper">
             <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action bg-light">Admin</a>
-                <a href="#" class="list-group-item list-group-item-action bg-light">User</a>
+                <a href="http://localhost:8080/user-test"
+                   class="list-group-item list-group-item-action bg-light">Admin</a>
+                <a href="http://localhost:8080/user-test2"
+                   class="list-group-item list-group-item-action bg-light">User</a>
             </div>
         </div>
         <div id="page-content-wrapper">
@@ -48,11 +48,7 @@
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#Table" role="tab"
-                               aria-controls="home" aria-selected="true">Users Table</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#User" role="tab"
-                               aria-controls="profile" aria-selected="false">New User</a>
+                               aria-controls="home" aria-selected="true">User</a>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
@@ -64,10 +60,10 @@
                                         <th>NAME</th>
                                         <th>LAST NAME</th>
                                         <th>AGE</th>
-                                        <th>DELETE</th>
-                                        <th>EDIT</th>
+                                        <th>EMAIL</th>
+                                        <th>ROLE</th>
                                     </tr>
-                                    <tbody id="myTable">
+                                    <tbody id="myUserTable">
 
                                     </tbody>
                                 </table>
