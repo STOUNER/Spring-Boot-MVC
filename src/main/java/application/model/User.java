@@ -36,7 +36,7 @@ public class User implements UserDetails {
 
     @Column
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id",foreignKey = @ForeignKey(name = "none"))
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id",foreignKey = @javax.persistence.ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Set<Role> roles;
 
     @Column
