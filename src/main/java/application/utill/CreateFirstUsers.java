@@ -28,13 +28,21 @@ public class CreateFirstUsers {
 
     @Transactional
     public void CreateFirstUsers() {
-        User user1 = new User("Denis","Ivanov","User@gmail.com", 24, Collections.singleton(new Role(1L, "ROLE_USER")),  "1224");
-        User user2 = new User("Ivan","Petrov","Admin@gmail.com", 32, Collections.singleton(new Role(2L, "ROLE_ADMIN")), "1224");
+        Role roleUser = new Role(1, "ROLE_USER");
+        Role roleAdmin = new Role(2, "ROLE_ADMIN");
+        User user1 = new User("Denis", "Ivanov", "User@gmail.com", 24, 1, "1224");
+        User user2 = new User("Ivan", "Petrov", "Admin@gmail.com", 32, 2, "1224");
+        User user3 = new User("Ivan", "Petrov", "Admin@gmail.com", 32, 2, "1224");
+
         Session session = sessionFactory.openSession();
+        session.save(roleUser);
+        session.save(roleAdmin);
         session.save(user1);
         session.save(user2);
+        session.save(user3);
         session.close();
     }
+
     @Bean
     public void createSessionFactoryUtil() {
         sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);

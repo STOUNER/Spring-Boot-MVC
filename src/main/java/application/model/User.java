@@ -1,21 +1,19 @@
 package application.model;
 
-import application.dto.RoleDTO;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class User implements UserDetails {
 
     @Id
@@ -34,8 +32,12 @@ public class User implements UserDetails {
     @Column
     private Integer age;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
+    @Column(name = "role_id")
+    private Integer roleId;
+
+    @Column()
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id",foreignKey = @javax.persistence.ForeignKey(name="none",value = ConstraintMode.NO_CONSTRAINT))
     private Set<Role> roles;
 
     @Column
@@ -44,33 +46,24 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String lastName, String email, Integer age, Set<Role> roles, String password) {
+    public User(String name, String lastName, String email, Integer age, Integer roleId, String password) {
         this.name = name;
         this.LastName = lastName;
         this.email = email;
         this.age = age;
-        this.roles = roles;
+        this.roleId = roleId;
         this.password = password;
     }
-    public User(Long id,String name, String lastName, String email, Integer age, Set<Role> roles, String password) {
+    public User(Long id,String name, String lastName, String email, Integer age, Integer roleId, String password) {
         this.id = id;
         this.name = name;
         this.LastName = lastName;
         this.email = email;
         this.age = age;
-        this.roles = roles;
+        this.roleId = roleId;
         this.password = password;
     }
 
-//    @JsonCreator
-//    public User(String name, String lastName, String email, String age, String password, @JsonProperty("roles") String roles) {
-//        this.name = name;
-//        this.LastName = lastName;
-//        this.email = email;
-//        this.age = Integer.getInteger(age);
-//        this.role = roles;
-//        this.password = password;
-//    }
 
     public Long getId() {
         return id;
@@ -110,6 +103,14 @@ public class User implements UserDetails {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
     @JsonManagedReference

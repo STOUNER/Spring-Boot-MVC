@@ -9,31 +9,31 @@ import java.util.Set;
 public class UserDTO {
 
 
-        private Long id;
+    private Long id;
 
-        private String name;
+    private String name;
 
-        private String LastName;
+    private String LastName;
 
-        private String email;
+    private String email;
 
-        private Integer age;
+    private Integer age;
 
-        private Set<RoleDTO> roles;
+    private Integer roleId;
 
-        private String password;
+    private String password;
 
-        public UserDTO() {
-        }
+    public UserDTO() {
+    }
 
-        public UserDTO(String name, String lastName, String email, Integer age, Set<RoleDTO> roles, String password) {
-            this.name = name;
-            this.LastName = lastName;
-            this.email = email;
-            this.age = age;
-            this.roles = roles;
-            this.password = password;
-        }
+    public UserDTO(String name, String lastName, String email, Integer age, Integer roleId, String password) {
+        this.name = name;
+        this.LastName = lastName;
+        this.email = email;
+        this.age = age;
+        this.roleId = roleId;
+        this.password = password;
+    }
 
     public Long getId() {
         return id;
@@ -75,12 +75,12 @@ public class UserDTO {
         this.age = age;
     }
 
-    public Set<RoleDTO> getRoles() {
-        return roles;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setRoles(Set<RoleDTO> roles) {
-        this.roles = roles;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
     public String getPassword() {

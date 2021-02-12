@@ -12,25 +12,25 @@ import java.util.Set;
 @Table(name = "role")
 public class Role implements GrantedAuthority {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "role_id")
-    private Long roleId;
+    private Integer roleId;
 
     @Column(name = "role_name")
     private String roleName;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id",referencedColumnName="id")
-    private User user;
+    @Column(name = "user")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    private Set<User> user;
 
     public Role() {
     }
 
-    public Role(Long roleId, String roleName) {
+    public Role(Integer roleId, String roleName) {
         this.roleId = roleId;
         this.roleName = roleName;
     }
@@ -40,11 +40,19 @@ public class Role implements GrantedAuthority {
         return roleName;
     }
 
-    public Long getRoleId() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(Integer roleId) {
         this.roleId = roleId;
     }
 
@@ -55,13 +63,5 @@ public class Role implements GrantedAuthority {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
-
-//    @JsonBackReference
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
 }
+

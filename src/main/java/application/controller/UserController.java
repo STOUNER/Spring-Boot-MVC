@@ -1,8 +1,6 @@
 package application.controller;
 
-import application.dto.RoleDTO;
 import application.dto.UserDTO;
-import application.model.Role;
 import application.model.User;
 import application.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -53,12 +51,11 @@ public class UserController {
     @RequestMapping(value = "save-update-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> saveUserJson(@RequestBody UserDTO user) {
         if (user != null) {
-            RoleDTO roleDTO = user.getRoles().stream().findFirst().get();
             if (user.getId() != null) {
-                userService.save(new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), Collections.singleton(new Role(roleDTO.getRoleId(), roleDTO.getRoleName())), user.getPassword()));
+                userService.save(new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword()));
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                userService.save(new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), Collections.singleton(new Role(roleDTO.getRoleId(), roleDTO.getRoleName())), user.getPassword()));
+                userService.save(new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword()));
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         } else {
