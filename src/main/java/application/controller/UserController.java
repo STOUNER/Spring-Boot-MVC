@@ -1,8 +1,10 @@
 package application.controller;
 
 import application.dto.UserDTO;
+import application.model.Role;
 import application.model.User;
 import application.service.UserService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ import java.util.*;
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ApplicationContext appContext) {
         this.userService = userService;
     }
 
@@ -52,10 +54,12 @@ public class UserController {
     public ResponseEntity<UserDTO> saveUserJson(@RequestBody UserDTO user) {
         if (user != null) {
             if (user.getId() != null) {
-                userService.save(new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword()));
+                User user2 = new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), 1, user.getPassword());
+                userService.save(user2);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                userService.save(new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword()));
+                User newUser = new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), 1, user.getPassword());
+                userService.save(newUser);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         } else {

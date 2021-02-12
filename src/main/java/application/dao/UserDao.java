@@ -1,5 +1,6 @@
 package application.dao;
 
+import application.model.Role;
 import application.model.User;
 import org.springframework.data.repository.CrudRepository;
 
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDao extends CrudRepository<User, Long> {
+    
+
     @Override
     <S extends User> S save(S s);
 

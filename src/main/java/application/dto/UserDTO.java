@@ -1,10 +1,5 @@
 package application.dto;
 
-import application.model.Role;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
-import java.util.Set;
 
 public class UserDTO {
 
