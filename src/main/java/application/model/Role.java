@@ -22,10 +22,10 @@ public class Role implements GrantedAuthority {
     @Column(name = "role_name")
     private String roleName;
 
-    @Column(name = "user")
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
-    private Set<User> user;
+//    @Column(name = "user")
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+//    private Set<User> user;
 
     public Role() {
     }
