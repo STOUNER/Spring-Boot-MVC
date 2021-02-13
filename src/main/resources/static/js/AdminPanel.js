@@ -52,6 +52,7 @@ function saveChanges(event) {
 }
 
 async function getSaveUser(user) {
+    debugger
     const response = await fetch(URL_SAVE, {
         method: "POST",
         headers: {"content-type": "application/json"},

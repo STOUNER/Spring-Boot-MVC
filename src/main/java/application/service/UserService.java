@@ -1,5 +1,6 @@
 package application.service;
 
+import application.model.Role;
 import application.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,9 +13,9 @@ public interface UserService extends UserDetailsService {
 
     public List<User> findAll();
 
-    public void deleteUserById(Long id);
+    public void deleteUserById(Integer id);
 
-    public User findById(Long id);
+    public User findById(Integer id);
 
 
 

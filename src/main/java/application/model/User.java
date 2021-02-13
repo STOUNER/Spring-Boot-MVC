@@ -1,6 +1,6 @@
 package application.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,12 +10,12 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "User")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column
     private String name;
@@ -29,13 +29,11 @@ public class User implements UserDetails {
     @Column
     private Integer age;
 
-    @Column(name = "role_id")
-    private Integer roleId;
-
-    @Column(name = "roles")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
-    private Set<Role> roleSet = new HashSet<Role>();
+    @Column(name = "roleNumber")
+    private Integer role_number;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Role> roleSet = new HashSet<>(0);
 
     @Column
     private String password;
@@ -43,31 +41,47 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String lastName, String email, Integer age, Integer roleId, String password) {
+    public User(String name, String lastName, String email, Integer age, Integer role_number, String password) {
         this.name = name;
         this.LastName = lastName;
         this.email = email;
         this.age = age;
-        this.roleId = roleId;
+        this.role_number = role_number;
         this.password = password;
     }
 
-    public User(Long id, String name, String lastName, String email, Integer age, Integer roleId, String password) {
+    public User(Integer id, String name, String lastName, String email, Integer age, Integer role_number, String password) {
         this.id = id;
         this.name = name;
         this.LastName = lastName;
         this.email = email;
         this.age = age;
-        this.roleId = roleId;
+        this.role_number = role_number;
         this.password = password;
     }
 
 
-    public Long getId() {
+    public void addRole(Role role) {
+        roleSet.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void removeAddress(Role role) {
+        roleSet.remove(role);
+        role.getUsers().remove(this);
+    }
+
+
+    public void setRoleSet(Set<Role> roles) {
+        this.roleSet = roles;
+    }
+
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -103,18 +117,17 @@ public class User implements UserDetails {
         this.age = age;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public Integer getRole_number() {
+        return role_number;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRole_number(Integer roleId) {
+        this.role_number = roleId;
     }
 
-    public Set<Role> getRoles() {
+    public Set<Role> getRoleSet() {
         return roleSet;
     }
-
 
     @Override
     public String getPassword() {
@@ -156,4 +169,16 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(LastName, user.LastName) && Objects.equals(email, user.email) && Objects.equals(age, user.age) && Objects.equals(role_number, user.role_number) && Objects.equals(roleSet, user.roleSet) && Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, LastName, email, age, role_number, password);
+    }
 }

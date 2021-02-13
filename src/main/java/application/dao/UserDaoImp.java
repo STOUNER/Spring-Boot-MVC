@@ -5,26 +5,20 @@ import application.model.Role;
 import application.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class UserDaoImp implements UserDao {
-    @Autowired
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
 
-    @Bean
-    @PostConstruct
-    public void createSessionFactory() {
-        sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+    public UserDaoImp(EntityManagerFactory entityManagerFactory, SessionFactory sessionFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+        this.sessionFactory = sessionFactory;
     }
 
     @Override
@@ -35,28 +29,25 @@ public class UserDaoImp implements UserDao {
     }
 
     @Override
-    public <S extends User> S save(S s) {
+    public void save(User s) {
         Session session = sessionFactory.openSession();
+        session.beginTransaction();
         //Проверяем, существует ли данный пользователь в таблице.
-        User user = session.load(User.class, s.getId());
-        if (user == null) {
+        if (s.getId() == null) {
+            Role role = session.load(Role.class, s.getRole_number());
+            s.addRole(role);
             session.save(s);
-            session.close();
+            session.flush();
         } else {
+            User user = session.get(User.class, s.getId());
             user.setAge(s.getAge());
             user.setName(s.getName());
         }
         session.close();
-        return s;
     }
 
     @Override
-    public <S extends User> Iterable<S> saveAll(Iterable<S> iterable) {
-        return null;
-    }
-
-    @Override
-    public Optional<User> findById(Long aLong) {
+    public Optional<User> findById(Integer aLong) {
         Session session = sessionFactory.openSession();
         Optional<User> user = Optional.of(session.load(User.class, aLong));
         session.close();
@@ -65,50 +56,19 @@ public class UserDaoImp implements UserDao {
 
 
     @Override
-    public boolean existsById(Long aLong) {
-        return false;
-    }
-
-    @Override
     public List<User> findAll() {
         Session session = sessionFactory.openSession();
         return session.createQuery("FROM User", User.class).getResultList();
     }
 
-    @Override
-    public List<User> findAllById(Iterable<Long> iterable) {
-        return null;
-    }
 
     @Override
-    public long count() {
-        return 0;
-    }
-
-
-    @Override
-    public void deleteById(Long aLong) {
+    public void deleteById(Integer aLong) {
         Session session = sessionFactory.openSession();
         User user = session.load(User.class, aLong);
         session.delete(user);
         session.close();
     }
-
-    @Override
-    public void delete(User user) {
-
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends User> iterable) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
-    }
-
 
 }
 

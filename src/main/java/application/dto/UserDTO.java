@@ -1,10 +1,16 @@
 package application.dto;
 
 
+import application.model.Role;
+import org.hibernate.mapping.Set;
+
+import java.util.HashSet;
+import java.util.List;
+
 public class UserDTO {
 
 
-    private Long id;
+    private Integer id;
 
     private String name;
 
@@ -18,10 +24,22 @@ public class UserDTO {
 
     private String password;
 
+    private List<RoleDTO> roles;
+
     public UserDTO() {
     }
 
-    public UserDTO(String name, String lastName, String email, Integer age, Integer roleId, String password) {
+    public UserDTO(Integer id, String name, String lastName, String email, Integer age, Integer roleId, String password, List<RoleDTO> roleList) {
+        this.name = name;
+        this.LastName = lastName;
+        this.email = email;
+        this.age = age;
+        this.roleId = roleId;
+        this.password = password;
+        this.roles = roleList;
+    }
+
+    public UserDTO(Long id, String name, String lastName, String email, Integer age, Integer roleId, String password) {
         this.name = name;
         this.LastName = lastName;
         this.email = email;
@@ -30,11 +48,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -84,5 +102,13 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleDTO> roles) {
+        this.roles = roles;
     }
 }

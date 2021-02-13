@@ -14,13 +14,14 @@ import java.util.List;
 
 @Service
 public class UserServiceImp implements UserService {
-    private final UserDao userDao;
+    private UserDao userDao;
 
     public UserServiceImp(UserDao userDao) {
         this.userDao = userDao;
     }
 
     @Override
+    @Transactional
     public void save(User user) {
         userDao.save(user);
     }
@@ -33,13 +34,13 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void deleteUserById(Long id) {
+    public void deleteUserById(Integer id) {
         userDao.deleteById(id);
     }
 
     @Override
     @Transactional
-    public User findById(Long id) {
+    public User findById(Integer id) {
         User user = userDao.findById(id).get();
         return user;
     }
@@ -49,5 +50,4 @@ public class UserServiceImp implements UserService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userDao.getUserByName(s);
     }
-
 }

@@ -1,10 +1,9 @@
 package application.controller;
 
+import application.dto.RoleDTO;
 import application.dto.UserDTO;
-import application.model.Role;
 import application.model.User;
 import application.service.UserService;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +21,23 @@ import java.util.*;
 @RestController
 @RequestMapping("/")
 public class UserController {
-    private final UserService userService;
+    private UserService userService;
 
-    public UserController(UserService userService, ApplicationContext appContext) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     //Получение текущего пользователя.
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("get-all-users")
-    public List<User> getListOfUsers() {
+    public List<UserDTO> getListOfUsers() {
         List<User> userList = userService.findAll();
-        return userList;
+        List<UserDTO> userDTOList = new LinkedList<>();
+        for (User user : userList) {
+            userDTOList.add(new UserDTO(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRole_number(), user.getPassword(), Collections.singletonList(new RoleDTO(user.getRoleSet().stream().findFirst().get().getId(), user.getRoleSet().stream().findFirst().get().getRoleName(), user.getRoleSet().stream().findFirst().get().getRoleNumber()))));
+        }
+        return userDTOList;
+
     }
 
     //Удаление пользователя.
@@ -54,11 +58,12 @@ public class UserController {
     public ResponseEntity<UserDTO> saveUserJson(@RequestBody UserDTO user) {
         if (user != null) {
             if (user.getId() != null) {
-                User user2 = new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), 1, user.getPassword());
-                userService.save(user2);
+                User oldUser = new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword());
+                userService.save(oldUser);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                User newUser = new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), 1, user.getPassword());
+                User newUser = new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword());
+//                newUser.addRole(roleService.getRole(user.getRoleId()));
                 userService.save(newUser);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
