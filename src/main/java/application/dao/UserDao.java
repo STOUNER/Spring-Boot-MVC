@@ -1,5 +1,6 @@
 package application.dao;
 
+import application.dto.UserDTO;
 import application.model.Role;
 import application.model.User;
 import org.springframework.data.repository.CrudRepository;
@@ -19,4 +20,6 @@ public interface UserDao {
     public void deleteById(Integer aLong);
 
     public Optional<User> findById(Integer aLong);
+
+    public void updateUser(UserDTO oldUser);
 }

@@ -1,10 +1,12 @@
 package application.dao;
 
 
+import application.dto.UserDTO;
 import application.model.Role;
 import application.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManagerFactory;
@@ -25,24 +27,19 @@ public class UserDaoImp implements UserDao {
     public User getUserByName(String login) {
         Session session = sessionFactory.openSession();
         User user = (User) session.createQuery("FROM User u where u.name = :login").setParameter("login", login).getSingleResult();
+        session.close();
         return user;
     }
 
     @Override
     public void save(User s) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
+        Transaction transaction = session.beginTransaction();
         //Проверяем, существует ли данный пользователь в таблице.
-        if (s.getId() == null) {
-            Role role = session.load(Role.class, s.getRole_number());
-            s.addRole(role);
-            session.save(s);
-            session.flush();
-        } else {
-            User user = session.get(User.class, s.getId());
-            user.setAge(s.getAge());
-            user.setName(s.getName());
-        }
+        Role role = session.load(Role.class, s.getRole_number());
+        s.addRole(role);
+        session.save(s);
+        transaction.commit();
         session.close();
     }
 
@@ -58,17 +55,39 @@ public class UserDaoImp implements UserDao {
     @Override
     public List<User> findAll() {
         Session session = sessionFactory.openSession();
-        return session.createQuery("FROM User", User.class).getResultList();
+        List<User> userList = session.createQuery("FROM User", User.class).getResultList();
+        session.close();
+        return userList;
     }
 
 
     @Override
     public void deleteById(Integer aLong) {
         Session session = sessionFactory.openSession();
-        User user = session.load(User.class, aLong);
+        Transaction transaction = session.beginTransaction();
+        User user = session.get(User.class, aLong);
         session.delete(user);
+        transaction.commit();
         session.close();
     }
 
+    @Override
+    public void updateUser(UserDTO oldUser) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = session.get(User.class, oldUser.getId());
+        Role role = session.load(Role.class, oldUser.getRoleId());
+
+        user.getRoleSet().clear();
+        user.setName(oldUser.getName());
+        user.setLastName(oldUser.getLastName());
+        user.setAge(oldUser.getAge());
+        user.setEmail(oldUser.getEmail());
+        user.addRole(role);
+
+        session.update(user);
+        transaction.commit();
+        session.close();
+    }
 }
 

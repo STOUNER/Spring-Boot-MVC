@@ -1,5 +1,6 @@
 package application.service;
 
+import application.dto.UserDTO;
 import application.model.Role;
 import application.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,12 +12,13 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
     public void save(User user);
 
+    public void update(UserDTO userDTO);
+
     public List<User> findAll();
 
     public void deleteUserById(Integer id);
 
     public User findById(Integer id);
-
 
 
     @Override

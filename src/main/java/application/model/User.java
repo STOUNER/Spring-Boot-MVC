@@ -1,6 +1,5 @@
 package application.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +10,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "User")
-public class User implements UserDetails {
+public class User implements UserDetails  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +30,6 @@ public class User implements UserDetails {
 
     @Column(name = "roleNumber")
     private Integer role_number;
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Role> roleSet = new HashSet<>(0);
 

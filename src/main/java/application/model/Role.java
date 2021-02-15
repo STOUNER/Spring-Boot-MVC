@@ -1,8 +1,5 @@
 package application.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -22,8 +19,7 @@ public class Role implements GrantedAuthority {
 
     @Column(name = "role_number")
     private Integer roleNumber;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "roleSet", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "roleSet", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Set<User> users = new HashSet<>() {
     };
 
@@ -34,6 +30,7 @@ public class Role implements GrantedAuthority {
         this.roleName = roleName;
         this.roleNumber = roleNumber;
     }
+
 
     @Override
     public String getAuthority() {

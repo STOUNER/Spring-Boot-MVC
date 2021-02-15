@@ -1,11 +1,13 @@
 package application.service;
 
 import application.dao.UserDao;
+import application.dto.UserDTO;
 import application.model.Role;
 import application.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -13,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@EnableTransactionManagement
 public class UserServiceImp implements UserService {
     private UserDao userDao;
 
@@ -27,13 +30,17 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public void update(UserDTO userDTO) {
+        userDao.updateUser(userDTO);
+    }
+
+    @Override
     @Transactional
     public List<User> findAll() {
         return userDao.findAll();
     }
 
     @Override
-    @Transactional
     public void deleteUserById(Integer id) {
         userDao.deleteById(id);
     }

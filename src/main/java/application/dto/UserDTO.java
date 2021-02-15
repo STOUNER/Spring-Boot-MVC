@@ -2,10 +2,12 @@ package application.dto;
 
 
 import application.model.Role;
-import org.hibernate.mapping.Set;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
+import javax.persistence.Transient;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserDTO {
 
@@ -30,6 +32,7 @@ public class UserDTO {
     }
 
     public UserDTO(Integer id, String name, String lastName, String email, Integer age, Integer roleId, String password, List<RoleDTO> roleList) {
+        this.id = id;
         this.name = name;
         this.LastName = lastName;
         this.email = email;
@@ -39,7 +42,8 @@ public class UserDTO {
         this.roles = roleList;
     }
 
-    public UserDTO(Long id, String name, String lastName, String email, Integer age, Integer roleId, String password) {
+    public UserDTO(Integer id, String name, String lastName, String email, Integer age, Integer roleId, String password) {
+        this.id = id;
         this.name = name;
         this.LastName = lastName;
         this.email = email;

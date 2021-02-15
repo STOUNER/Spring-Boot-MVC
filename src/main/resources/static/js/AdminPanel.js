@@ -6,12 +6,12 @@ const URL_CURRENT_USER = "http://localhost:8080/current-session-user"
 const table = document.getElementById("myTable");
 const nav = document.getElementById("currentUser")
 const userTab = document.getElementById("home-tab")
-// const USER_ROLE = [
-//     {roleId: 1, roleName: "ROLE_USER", authority: "ROLE_USER"},
-// ];
-// const ADMIN_ROLE = [
-//     {roleId: 2, roleName: "ROLE_ADMIN", authority: "ROLE_ADMIN"},
-// ];
+const USER_ROLE = [
+    {roleId: 1, roleName: "ROLE_USER", authority: "ROLE_USER"},
+];
+const ADMIN_ROLE = [
+    {roleId: 2, roleName: "ROLE_ADMIN", authority: "ROLE_ADMIN"},
+];
 const form = document.getElementById("myNewUser");
 //Константы - конец заполнения.
 
@@ -46,13 +46,14 @@ function saveChanges(event) {
         email: email.value,
         age: age.value,
         password: password.value,
-        roles: roles.value === "1" ? 1 : 2,
+        roleId: roles.value === "1" ? 1 : 2
+
     }
+    console.log(dataUserForm)
     getSaveUser(dataUserForm);
 }
 
 async function getSaveUser(user) {
-    debugger
     const response = await fetch(URL_SAVE, {
         method: "POST",
         headers: {"content-type": "application/json"},
@@ -154,7 +155,7 @@ form.addEventListener("submit", (event) => {
         password: password.value,
         roleId: roles.value === "1" ? 1 : 2
     };
-    console.log(dataUserForm)
+
     getSaveUser(dataUserForm)
     TriggerTabs();
 });

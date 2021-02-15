@@ -29,12 +29,29 @@ public class UserController {
 
     //Получение текущего пользователя.
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("get-all-users")
+    @RequestMapping(value = "get-all-users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserDTO> getListOfUsers() {
         List<User> userList = userService.findAll();
-        List<UserDTO> userDTOList = new LinkedList<>();
+        List<UserDTO> userDTOList = new LinkedList<UserDTO>();
         for (User user : userList) {
-            userDTOList.add(new UserDTO(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRole_number(), user.getPassword(), Collections.singletonList(new RoleDTO(user.getRoleSet().stream().findFirst().get().getId(), user.getRoleSet().stream().findFirst().get().getRoleName(), user.getRoleSet().stream().findFirst().get().getRoleNumber()))));
+            userDTOList.add(
+                    new UserDTO(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRole_number(), user.getPassword(), Collections.singletonList(new RoleDTO(user.
+                            getRoleSet()
+                            .stream()
+                            .findFirst()
+                            .get()
+                            .getId(),
+                            user
+                                    .getRoleSet()
+                                    .stream()
+                                    .findFirst()
+                                    .get()
+                                    .getRoleName(),
+                            user.getRoleSet()
+                                    .stream()
+                                    .findFirst()
+                                    .get()
+                                    .getRoleNumber()))));
         }
         return userDTOList;
 
@@ -58,12 +75,10 @@ public class UserController {
     public ResponseEntity<UserDTO> saveUserJson(@RequestBody UserDTO user) {
         if (user != null) {
             if (user.getId() != null) {
-                User oldUser = new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword());
-                userService.save(oldUser);
+                userService.update(user);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 User newUser = new User(user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRoleId(), user.getPassword());
-//                newUser.addRole(roleService.getRole(user.getRoleId()));
                 userService.save(newUser);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
@@ -74,14 +89,31 @@ public class UserController {
 
     //Получение текущего пользователя в сессии.
     @RequestMapping(value = "current-session-user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User getCurrentUser() {
+    public UserDTO getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        return user;
+        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAge(), user.getRole_number(), user.getPassword(), Collections.singletonList(new RoleDTO(user.
+                getRoleSet()
+                .stream()
+                .findFirst()
+                .get()
+                .getId(),
+                user
+                        .getRoleSet()
+                        .stream()
+                        .findFirst()
+                        .get()
+                        .getRoleName(),
+                user.getRoleSet()
+                        .stream()
+                        .findFirst()
+                        .get()
+                        .getRoleNumber())));
+        return userDTO;
     }
 
     //Logout пользователя.
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @RequestMapping(value = "/logout", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public RedirectView logoutPage(HttpServletRequest request,
                                    HttpServletResponse response) {
         Authentication auth =
