@@ -1,6 +1,8 @@
 package application.dto;
 
-public class RoleDTO {
+import org.springframework.security.core.GrantedAuthority;
+
+public class RoleDTO implements GrantedAuthority {
     private Integer id;
     private String roleName;
     private Integer roleNumber;
@@ -9,6 +11,11 @@ public class RoleDTO {
         this.id = id;
         this.roleName = roleName;
         this.roleNumber = roleNumber;
+    }
+
+    @Override
+    public String getAuthority() {
+        return roleName;
     }
 
     public Integer getId() {

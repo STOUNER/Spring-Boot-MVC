@@ -1,5 +1,6 @@
 package application.security.handler;
 
+import application.dto.UserDTO;
 import application.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -20,7 +21,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
                                         Authentication authentication) throws IOException, ServletException {
-        User user = (User) authentication.getPrincipal();
+        UserDTO user = (UserDTO) authentication.getPrincipal();
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
         if (roles.contains("ROLE_USER")) {
             httpServletResponse.sendRedirect("user-info");
